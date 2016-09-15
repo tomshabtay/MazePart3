@@ -18,6 +18,12 @@ public class CLI implements Runnable {
 		this.commands = commands;
 	}
 
+	/**
+	 * Start the loop.
+	 *
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	public void start() throws IOException {
 		String str = null;
 		Command command = null;
@@ -39,13 +45,15 @@ public class CLI implements Runnable {
 
 					command.doCommand(str.substring(str.split(" ")[0].length() + 1));
 				} else {
-					out.println("Args needed, try again.");
+					if (!str.equalsIgnoreCase("exit"))
+						out.println("Args needed, try again.");
 				}
 			} else {
 				out.println("Invalid Input.");
 			}
 
-		} while (str != "exit");
+		} while (!str.equalsIgnoreCase("exit"));
+		command.doCommand(null);
 
 	}
 
@@ -65,6 +73,12 @@ public class CLI implements Runnable {
 
 	public void printToOut(String str) {
 		out.print(str);
+	}
+
+	public void exit() throws IOException {
+		in.close();
+		out.close();
+
 	}
 
 }

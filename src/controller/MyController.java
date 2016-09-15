@@ -1,5 +1,6 @@
 package controller;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import controller.commands.Command;
@@ -7,6 +8,7 @@ import controller.commands.DirCommand;
 import controller.commands.DisplayCrossCommand;
 import controller.commands.DisplayMazeCommand;
 import controller.commands.DisplaySolutionCommand;
+import controller.commands.ExitCommand;
 import controller.commands.GenerateMazeCommand;
 import controller.commands.LoadMazeCommand;
 import controller.commands.SaveMazeCommand;
@@ -14,12 +16,28 @@ import controller.commands.SolveMazeCommand;
 import model.MyModel;
 import view.MyView;
 
+/**
+ * The Class MyController.
+ */
 public class MyController implements Controller {
 
+	/** The view. */
 	private MyView view;
+
+	/** The model. */
 	private MyModel model;
+
+	/** The commands. */
 	private HashMap<String, Command> commands;
 
+	/**
+	 * Instantiates a new my controller.
+	 *
+	 * @param view
+	 *            the view
+	 * @param model
+	 *            the model
+	 */
 	public MyController(MyView view, MyModel model) {
 		// Protocol Commands initiating
 		this.commands = new HashMap<String, Command>();
@@ -31,8 +49,8 @@ public class MyController implements Controller {
 		commands.put("load_maze", new LoadMazeCommand(this));
 		commands.put("solve", new SolveMazeCommand(this));
 		commands.put("display_solution", new DisplaySolutionCommand(this));
-		
-	
+		commands.put("exit", new ExitCommand(this));
+
 		// Initiating view and model
 		this.view = view;
 		this.model = model;
@@ -45,11 +63,19 @@ public class MyController implements Controller {
 		model.setController(this);
 	}
 
+	/**
+	 * Start the program via the controller
+	 */
 	public void start() {
 		// Starting the CLI loop in view
 		view.start();
 	}
 
+	/*
+	 * 
+	 * 
+	 * @see controller interface for explanations
+	 */
 	public void printToOut(String str) {
 		view.printToOut(str);
 	}
@@ -62,31 +88,33 @@ public class MyController implements Controller {
 		model.displayMaze(name);
 	}
 
+
 	public void displayCross(String args) {
 		model.displayCross(args);
 	}
-	
-	public void displaySolution(String args)
-	{
+
+
+	public void displaySolution(String args) {
 		model.displaySolution(args);
 	}
-	
-	public void solveMaze(String args)
-	{
+
+
+	public void solveMaze(String args) {
 		model.solveMaze(args);
 	}
 
-	public void saveMaze(String args){
+	public void saveMaze(String args) {
 		model.saveMaze(args);
 	}
-	
-	public void loadMaze(String args){
+
+	public void loadMaze(String args) {
 		model.loadMaze(args);
 	}
 
 	@Override
-	public void exit() {
-		// TODO Auto-generated method stub
-		
+	public void exit() throws IOException {
+		model.exit();
+		view.exit();
+
 	}
 }

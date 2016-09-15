@@ -17,21 +17,50 @@ import controller.Controller;
 import io.MyCompressorOutputStream;
 import io.MyDecompressorInputStream;
 
+/**
+ * The Class MyModel.
+ */
 public class MyModel implements Model {
 
+	/** The mazes. */
 	private HashMap<String, Maze3d> mazes;
+
+	/** The solutions. */
 	private HashMap<String, Solution> solutions;
+
+	/** The Controller. */
 	private Controller c;
 
+	/**
+	 * Instantiates a new my model.
+	 */
 	public MyModel() {
 		mazes = new HashMap<String, Maze3d>();
 		solutions = new HashMap<String, Solution>();
 	}
 
+	/**
+	 * Sets the controller.
+	 *
+	 * @param c
+	 *            the new controller
+	 */
 	public void setController(Controller c) {
 		this.c = c;
 	}
 
+	/**
+	 * Genrate maze.
+	 *
+	 * @param name
+	 *            the name
+	 * @param x
+	 *            the x
+	 * @param y
+	 *            the y
+	 * @param z
+	 *            the z
+	 */
 	public void genrateMaze(String name, int x, int y, int z) {
 		Maze3d maze = new Maze3d();
 		GrowingTreeGenerator g = new GrowingTreeGenerator();
@@ -40,10 +69,22 @@ public class MyModel implements Model {
 		c.printToOut("a new maze '" + name + "' have been added successfuly.\n");
 	}
 
+	/**
+	 * Display the maze.
+	 *
+	 * @param name
+	 *            the name
+	 */
 	public void displayMaze(String name) {
 		mazes.get(name).printMaze();
 	}
 
+	/**
+	 * Display cross section.
+	 *
+	 * @param args
+	 *            the args
+	 */
 	public void displayCross(String args) {
 		String[] argsArray = args.split(" ");
 		Maze3d m = mazes.get(argsArray[2]);
@@ -65,6 +106,12 @@ public class MyModel implements Model {
 
 	}
 
+	/**
+	 * Save maze to a file.
+	 *
+	 * @param args
+	 *            the args
+	 */
 	public void saveMaze(String args) {
 
 		try {
@@ -72,13 +119,11 @@ public class MyModel implements Model {
 			Maze3d m = mazes.get(argsArray[0]);
 			String filename = argsArray[1] + ".maz";
 			int sizeInt = m.toByteArray().length;
-			
-			
+
 			OutputStream out = new MyCompressorOutputStream(new FileOutputStream(filename));
 
 			// Saving the maze size
 			((MyCompressorOutputStream) out).writeSize(sizeInt);
-
 
 			// Saving the maze
 			out.write(m.toByteArray());
@@ -86,37 +131,47 @@ public class MyModel implements Model {
 			out.close();
 			c.printToOut("Maze saved.");
 		} catch (Exception e) {
-			//c.printToOut("Problem saving the maze.");
-			e.printStackTrace();
+			c.printToOut("Problem saving the maze.");
+			// e.printStackTrace();
 		}
 	}
 
-	public void loadMaze(String args){
-		try{
+	/**
+	 * Load maze.
+	 *
+	 * @param args
+	 *            the args
+	 */
+	public void loadMaze(String args) {
+		try {
 			String[] argsArray = args.split(" ");
 			String mazename = argsArray[0];
 			String filename = argsArray[1] + ".maz";
-			int sizeA,sizeB,size;
-			
+			int sizeA, sizeB, size;
+
 			InputStream in = new MyDecompressorInputStream(new FileInputStream(filename));
 			int aint = in.read();
 			int bint = in.read();
-			int sizeint = aint*100 + bint;
-			
+			int sizeint = aint * 100 + bint;
+
 			byte b[] = new byte[sizeint];
 			in.read(b);
 			in.close();
 			Maze3d m = new Maze3d(b);
 			mazes.put(mazename, m);
 			c.printToOut("Maze loaded.");
-		}
-		catch(Exception e)
-		{
-			//c.printToOut("Problem loading the maze.");
+		} catch (Exception e) {
+			// c.printToOut("Problem loading the maze.");
 			e.printStackTrace();
 		}
 	}
 
+	/**
+	 * Solve maze.
+	 *
+	 * @param args
+	 *            the args
+	 */
 	public void solveMaze(String args) {
 		String[] argsArray = args.split(" ");
 		Maze3d maze = mazes.get(argsArray[0]);
@@ -138,8 +193,24 @@ public class MyModel implements Model {
 
 	}
 
+	/**
+	 * Display the solution.
+	 *
+	 * @param args
+	 *            the args
+	 */
 	public void displaySolution(String args) {
 		String[] argsArray = args.split(" ");
 		solutions.get(argsArray[0]).printSolution();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see model.Model#exit()
+	 */
+	@Override
+	public void exit() {
+
 	}
 }
